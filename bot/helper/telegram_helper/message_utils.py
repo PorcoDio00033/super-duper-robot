@@ -32,7 +32,6 @@ async def send_photo(message, photo, caption, buttons=None, block=True):
             photo=photo,
             caption=caption,
             quote=True,
-            disable_web_page_preview=True,
             disable_notification=True,
             reply_markup=buttons,
         )
