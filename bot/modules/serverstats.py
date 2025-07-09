@@ -15,8 +15,8 @@ from .. import bot_start_time
 @new_task
 async def server_stats(_, message):
 
-    image = Image.open("TelegramBot/helpers/assets/statsbg.png").convert("RGB")
-    IronFont = ImageFont.truetype("TelegramBot/helpers/assets/IronFont.otf", 42)
+    image = Image.open("bot/assets/statsbg.jpg").convert("RGB")
+    IronFont = ImageFont.truetype("bot/assets/IronFont.otf", 42)
     draw = ImageDraw.Draw(image)
 
     # 120, coordinate, progress, coordinate - 25

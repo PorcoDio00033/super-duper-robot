@@ -319,3 +319,17 @@ def add_handlers():
             & CustomFilters.authorized,
         )
     )
+    TgClient.bot.add_handler(
+        MessageHandler(
+            server_stats,
+            filters=command(BotCommands.ServerStats, case_sensitive=True)
+            & CustomFilters.authorized,
+        )
+    )
+    TgClient.bot.add_handler(
+        MessageHandler(
+            speedtest_cmd,
+            filters=command(BotCommands.Speedtest, case_sensitive=True)
+            & CustomFilters.authorized,
+        )
+    )
