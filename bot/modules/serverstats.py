@@ -75,32 +75,32 @@ async def server_stats(_, message):
         avg_temp = f"{avg_temp:.1f}°C"
 
     caption = f"""
-**Hostname:** {platform.node()}
-**Kernel:** {platform.release()}
+<b>Hostname:</b> {platform.node()}
+<b>Kernel:</b> {platform.release()}
 
-**CPU:** {cpu}
-**CPU SPEC:** {cpu_count} cores @ {cpu_freq_str}, {cpu_load}%
-**Bot Usage:** {botusage}
-**Load Avg:** {load_avg}
-**CPU Temp:** {avg_temp}
+<b>CPU:</b> {cpu}
+<b>CPU SPEC:</b> {cpu_count} cores @ {cpu_freq_str}, {cpu_load}%
+<b>Bot Usage:</b> {botusage}
+<b>Load Avg:</b> {load_avg}
+<b>CPU Temp:</b> {avg_temp}
 
-**Swap:** {swap_used} / {swap_total} ({swap_percent}%)
+<b>Swap:</b> {swap_used} / {swap_total} ({swap_percent}%)
 
-**Arch:** {arch}
-**OS:** {os_name} {os_version}
-**OS Uptime:** {osuptime}
+<b>Arch:</b> {arch}
+<b>OS:</b> {os_name} {os_version}
+<b>OS Uptime:</b> {osuptime}
 
-**Total Space:** {disk_total}
-**Free Space:** {disk_free}
-**Disk I/O:** R {get_readable_bytes(dio.read_bytes)} | W {get_readable_bytes(dio.write_bytes)}
+<b>Total Space:</b> {disk_total}
+<b>Free Space:</b> {disk_free}
+<b>Disk I/O:</b> R {get_readable_bytes(dio.read_bytes)} | W {get_readable_bytes(dio.write_bytes)}
 
-**Download:** {download}
-**Upload:** {upload}
+<b>Download:</b> {download}
+<b>Upload:</b> {upload}
 """
 
     for iface, stats in psutil.net_if_stats().items():
         if stats.isup:
-            caption += f"\n**Net:** {iface} is UP - {stats.speed} Mbps"
+            caption += f"\n<b>Net:</b> {iface} is UP - {stats.speed} Mbps"
 
     start = datetime.now()
     msg = await send_photo(message, photo="https://te.legra.ph/file/30a82c22854971d0232c7.jpg", caption=caption)
