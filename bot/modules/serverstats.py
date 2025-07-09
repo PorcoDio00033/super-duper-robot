@@ -5,17 +5,16 @@ import psutil, cpuinfo, platform
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 
-from pyrogram.types import InputMediaPhoto
-
 from ..helper.ext_utils.bot_utils import new_task
 from ..helper.ext_utils.status_utils import get_readable_bytes, get_readable_time
+from ..helper.telegram_helper.message_utils import edit_photo, send_photo
 from .. import bot_start_time
 
 
 @new_task
 async def server_stats(_, message):
 
-    image = Image.open("bot/assets/statsbg.jpg").convert("RGB")
+    image = Image.open("bot/assets/statsbg.png").convert("RGB")
     IronFont = ImageFont.truetype("bot/assets/IronFont.otf", 42)
     draw = ImageDraw.Draw(image)
 
@@ -104,10 +103,7 @@ async def server_stats(_, message):
             caption += f"\n**Net:** {iface} is UP - {stats.speed} Mbps"
 
     start = datetime.now()
-    msg = await message.reply_photo(
-        photo="https://te.legra.ph/file/30a82c22854971d0232c7.jpg",
-        caption=caption,
-        quote=True)
+    msg = await send_photo(message, photo="https://te.legra.ph/file/30a82c22854971d0232c7.jpg", caption=caption)
     end = datetime.now()
 
     draw_progressbar(243, int(cpu_percentage))
@@ -143,5 +139,5 @@ async def server_stats(_, message):
     )
 
     image.save("stats.png")
-    await msg.edit_media(media=InputMediaPhoto("stats.png", caption=caption))
+    await edit_photo(msg, photo="stats.png", caption=caption)
     os.remove("stats.png")

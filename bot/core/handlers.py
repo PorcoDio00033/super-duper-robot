@@ -323,13 +323,13 @@ def add_handlers():
         MessageHandler(
             server_stats,
             filters=command(BotCommands.ServerStats, case_sensitive=True)
-            & CustomFilters.authorized,
+            & CustomFilters.sudo,
         )
     )
     TgClient.bot.add_handler(
         MessageHandler(
             speedtest_cmd,
             filters=command(BotCommands.Speedtest, case_sensitive=True)
-            & CustomFilters.authorized,
+            & CustomFilters.sudo,
         )
     )

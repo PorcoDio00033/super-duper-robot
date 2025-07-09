@@ -1,5 +1,6 @@
 from asyncio import sleep
 from pyrogram.errors import FloodWait, FloodPremiumWait
+from pyrogram.types import InputMediaPhoto
 from re import match as re_match
 from time import time
 
@@ -10,6 +11,20 @@ from ..ext_utils.bot_utils import SetInterval
 from ..ext_utils.exceptions import TgLinkException
 from ..ext_utils.status_utils import get_readable_message
 
+async def edit_photo(message, photo, caption, buttons=None, block=True):
+    try:
+        return await message.edit_media(
+            media=InputMediaPhoto(photo, caption=caption)
+        )
+    except FloodWait as f:
+        LOGGER.warning(str(f))
+        if not block:
+            return str(f)
+        await sleep(f.value * 1.2)
+        return await edit_photo(message, photo, caption, buttons)
+    except Exception as e:
+        LOGGER.error(str(e))
+        return str(e)
 
 async def send_photo(message, photo, caption, buttons=None, block=True):
     try:

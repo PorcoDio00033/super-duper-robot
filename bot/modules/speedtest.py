@@ -36,5 +36,5 @@ Server: {result["server"]["host"]}
 Name: {result["server"]["sponsor"]}
 Country: {result["server"]["name"]} {result["server"]["country"]}
 """
-    await delete_message(message)
+    await delete_message(speed)
     return await send_photo(message, photo=result["share"], caption=speed_string)
