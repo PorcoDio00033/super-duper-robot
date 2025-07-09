@@ -11,6 +11,26 @@ from ..ext_utils.exceptions import TgLinkException
 from ..ext_utils.status_utils import get_readable_message
 
 
+async def send_photo(message, photo, caption, buttons=None, block=True):
+    try:
+        return await message.reply_photo(
+            photo=photo,
+            caption=caption,
+            quote=True,
+            disable_web_page_preview=True,
+            disable_notification=True,
+            reply_markup=buttons,
+        )
+    except FloodWait as f:
+        LOGGER.warning(str(f))
+        if not block:
+            return str(f)
+        await sleep(f.value * 1.2)
+        return await send_photo(message, photo, caption, buttons)
+    except Exception as e:
+        LOGGER.error(str(e))
+        return str(e)
+
 async def send_message(message, text, buttons=None, block=True):
     try:
         return await message.reply(

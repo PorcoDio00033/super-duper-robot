@@ -32,3 +32,5 @@ uvicorn
 uvloop
 xattr
 yt-dlp[default,curl-cffi]
+speedtest-cli
+py-cpuinfo

@@ -2,6 +2,7 @@ from html import escape
 from psutil import virtual_memory, cpu_percent, disk_usage
 from time import time
 from asyncio import iscoroutinefunction, gather
+from typing import Union
 
 from ... import task_dict, task_dict_lock, bot_start_time, status_dict, DOWNLOAD_DIR
 from ...core.config_manager import Config
@@ -130,6 +131,25 @@ def time_to_seconds(time_duration):
     except:
         return 0
 
+def get_readable_bytes(size: Union[int, str]) -> str:
+    """Return a human readable file size from bytes."""
+
+    UNIT_SUFFIXES = ["B", "KiB", "MiB", "GiB", "TiB"]
+
+    if isinstance(size, str):
+        size = int(size)
+
+    if size < 0:
+        raise ValueError("Size must be positive")
+    if size == 0:
+        return "0 B"
+
+    i = 0
+    while size >= 1024 and i < len(UNIT_SUFFIXES) - 1:
+        size /= 1024
+        i += 1
+
+    return f"{size:.2f} {UNIT_SUFFIXES[i]}"
 
 def speed_string_to_bytes(size_text: str):
     size = 0
