@@ -1,6 +1,9 @@
 name: Build and Push image to DockerHub
 
 on:
+  push:
+    branches:
+      - master
   schedule:
     - cron: '0 */12 * * *'
   workflow_dispatch:
