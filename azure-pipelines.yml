@@ -14,9 +14,6 @@ schedules:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  DOCKER_CONFIG: ${{ secrets.CONFIG }}
-
 jobs:
 - job: build_and_run
   timeoutInMinutes: 60
@@ -48,10 +45,12 @@ jobs:
 
   - script: |
       cat <<EOF > config.py
-      ${{ secrets.CONFIG }}
+      $CONFIG
       EOF
       sudo docker compose up --build -d
     displayName: Build Docker Image
+    env:
+      CONFIG: $(CONFIG)
 
   - script: |
       for i in {1..10}; do
