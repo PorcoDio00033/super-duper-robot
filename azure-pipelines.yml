@@ -1,0 +1,66 @@
+trigger:
+  branches:
+    include:
+      - master
+
+schedules:
+  - cron: "0 */12 * * *"
+    displayName: Scheduled run every 12 hours
+    branches:
+      include:
+        - master
+    always: true
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  DOCKER_CONFIG: ${{ secrets.CONFIG }}
+
+jobs:
+- job: build_and_run
+  timeoutInMinutes: 60
+  steps:
+  - checkout: self
+
+  - script: |
+      sudo apt-get update
+      sudo apt-get install -y \
+        ca-certificates \
+        curl \
+        gnupg \
+        lsb-release
+      sudo mkdir -p /etc/apt/keyrings
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+      sudo apt-get update
+      sudo apt-get install -y \
+        docker-ce \
+        docker-ce-cli \
+        containerd.io \
+        docker-buildx-plugin \
+        docker-compose-plugin
+      sudo systemctl start docker
+    displayName: Install Docker and Docker Compose
+
+  - script: docker compose version
+    displayName: Check Docker Compose version
+
+  - script: |
+      cat <<EOF > config.py
+      ${{ secrets.CONFIG }}
+      EOF
+      sudo docker compose up --build -d
+    displayName: Build Docker Image
+
+  - script: |
+      for i in {1..10}; do
+        if ! docker ps --filter "name=mirror-leech-bot" --format '{{.Names}}' | grep -q mirror-leech-bot; then
+          echo "Error: Container exited; failing job."
+          exit 1
+        fi
+        echo "$(date): Build is still building..."
+        sleep 300
+      done
+    displayName: Monitor Docker Container
+
