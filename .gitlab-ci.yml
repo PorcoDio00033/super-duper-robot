@@ -9,7 +9,6 @@ build_and_push:
   image: docker:latest
   services:
     - docker:dind
-  timeout: 1h
   before_script:
     - apk add --no-cache curl gnupg lsb-release bash
     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apk/keys/docker.gpg
@@ -25,8 +24,10 @@ build_and_push:
           exit 1
         fi
         echo "$(date): Build is still building..."
-        sleep 290
+        sleep 1800
       done
+      sleep 290
+      echo "$(date): Bulding finished!"
   only:
     - main  # Change this to your branch name
   when: manual  # Equivalent to `workflow_dispatch`
