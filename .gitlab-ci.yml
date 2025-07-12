@@ -18,7 +18,7 @@ build_and_push:
     - docker compose version
     - docker compose up --build -d
     - |
-      for i in $(seq 1 11); do
+      for i in $(seq 1 5); do
         if ! docker ps --filter "name=mirror-leech-bot" --format '{{.Names}}' | grep -q mirror-leech-bot; then
           echo "Container exited; failing job."
           exit 1
@@ -26,7 +26,7 @@ build_and_push:
         echo "$(date): Build is still building..."
         sleep 1800
       done
-      sleep 290
+      sleep 1700
       echo "$(date): Bulding finished!"
   only:
     - main  # Change this to your branch name
