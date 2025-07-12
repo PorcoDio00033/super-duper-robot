@@ -29,8 +29,6 @@ build_and_push:
       done
       sleep 1700
       echo "$(date): Bulding finished!"
-  only:
-    - main  # Change this to your branch name
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
     - if: '$CI_PIPELINE_SOURCE == "web"'
