@@ -7,6 +7,7 @@ variables:
 build_and_push:
   stage: build
   image: docker:latest
+  resource_group: auto-build
   services:
     - docker:dind
   before_script:
@@ -30,4 +31,6 @@ build_and_push:
       echo "$(date): Bulding finished!"
   only:
     - main  # Change this to your branch name
-  when: manual  # Equivalent to `workflow_dispatch`
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
