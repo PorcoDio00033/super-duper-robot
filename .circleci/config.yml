@@ -1,0 +1,63 @@
+version: 2.1
+
+jobs:
+  build-and-push:
+    docker:
+      - image: cimg/base:stable
+      - image: docker:dind
+        environment:
+          DOCKER_DRIVER: overlay2
+
+    environment:
+      DOCKER_HOST: tcp://localhost:2375
+      DOCKER_TLS_CERTDIR: ""
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y curl gnupg lsb-release docker-compose
+
+      - run:
+          name: Write config.py from secret
+          command: |
+            echo "$CONFIG" | base64 -d > config.py
+
+      - run:
+          name: Docker Compose Version
+          command: docker compose version
+
+      - run:
+          name: Build and Run Docker Compose
+          command: |
+            docker compose up --build -d
+
+      - run:
+          name: Wait and check for container health
+          command: |
+            for i in $(seq 1 5); do
+              if ! docker ps --filter "name=mirror-leech-bot" --format '{{.Names}}' | grep -q mirror-leech-bot; then
+                echo "Container exited; failing job."
+                exit 1
+              fi
+              echo "$(date): Build is still building..."
+              sleep 1800
+            done
+            sleep 1700
+            echo "$(date): Building finished!"
+
+workflows:
+  version: 2
+  build-workflow:
+    triggers:
+      - schedule:
+          cron: "0 */12 * * *"
+          filters:
+            branches:
+              only: master
+    jobs:
+      - build-and-push
+
