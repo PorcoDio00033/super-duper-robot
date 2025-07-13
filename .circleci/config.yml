@@ -3,23 +3,12 @@ version: 2.1
 jobs:
   build-and-push:
     docker:
-      - image: cimg/base:stable
-      - image: docker:dind
-        environment:
-          DOCKER_DRIVER: overlay2
-
-    environment:
-      DOCKER_HOST: tcp://localhost:2375
-      DOCKER_TLS_CERTDIR: ""
+      - image: cimg/base:latest
 
     steps:
       - checkout
-
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y curl gnupg lsb-release docker-compose
+      - setup_remote_docker:
+          version: default
 
       - run:
           name: Write config.py from secret
